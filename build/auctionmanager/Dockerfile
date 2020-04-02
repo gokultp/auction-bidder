@@ -1,10 +1,10 @@
 FROM golang:1.12 as builder
 WORKDIR /auctions
 COPY . /auctions/
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-w -s -X main.Version=${VERSION} -X main.MinVersion=$(git rev-parse HEAD) -X main.BuildTime=$(date +%FT%T%z)" ./cmd/auctionmanager
+RUN CGO_ENABLED=0 GOOS=linux go build -mod vendor -ldflags "-w -s -X main.Version=${VERSION} -X main.MinVersion=$(git rev-parse HEAD) -X main.BuildTime=$(date +%FT%T%z)" ./cmd/auctionmanager
 
 
-FROM alpine:3.10 as deploy
+FROM alpine:3.11 as deploy
 WORKDIR /auctions
 
 COPY --from=builder /auctions/auctionmanager ./auctionmanager

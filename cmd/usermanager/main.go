@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"net/http"
 
 	"github.com/gokultp/auction-bidder/pkg/uptime"
@@ -25,6 +24,5 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/health", u.Handler)
 
-	fmt.Println("listening on port ", port)
 	http.ListenAndServe(":"+port, r)
 }

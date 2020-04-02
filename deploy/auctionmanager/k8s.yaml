@@ -1,0 +1,125 @@
+---
+# Source: auctionmanager/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: auctionmanager
+  labels:
+    helm.sh/chart: auctionmanager-0.1.0
+    app.kubernetes.io/name: auctionmanager
+    app.kubernetes.io/instance: auctionmanager
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: auctionmanager/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: auctionmanager
+  labels:
+    helm.sh/chart: auctionmanager-0.1.0
+    app.kubernetes.io/name: auctionmanager
+    app.kubernetes.io/instance: auctionmanager
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: auctionmanager
+    app.kubernetes.io/instance: auctionmanager
+---
+# Source: auctionmanager/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auctionmanager
+  labels:
+    helm.sh/chart: auctionmanager-0.1.0
+    app.kubernetes.io/name: auctionmanager
+    app.kubernetes.io/instance: auctionmanager
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: auctionmanager
+      app.kubernetes.io/instance: auctionmanager
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: auctionmanager
+        app.kubernetes.io/instance: auctionmanager
+    spec:
+      serviceAccountName: auctionmanager
+      securityContext:
+        {}
+      containers:
+        - name: auctionmanager
+          securityContext:
+            {}
+          image: "auctionmanager:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          resources:
+            {}
+---
+# Source: auctionmanager/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: auctionmanager
+  labels:
+    helm.sh/chart: auctionmanager-0.1.0
+    app.kubernetes.io/name: auctionmanager
+    app.kubernetes.io/instance: auctionmanager
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: "api.auctionbidder.com"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: auctionmanager
+              servicePort: 80
+---
+# Source: auctionmanager/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "auctionmanager-test-connection"
+  labels:
+    helm.sh/chart: auctionmanager-0.1.0
+    app.kubernetes.io/name: auctionmanager
+    app.kubernetes.io/instance: auctionmanager
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['auctionmanager:80/health']
+  restartPolicy: Never
