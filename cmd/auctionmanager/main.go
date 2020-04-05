@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gokultp/auction-bidder/internal/db"
 	"github.com/gokultp/auction-bidder/pkg/uptime"
 	"github.com/gorilla/mux"
 )
@@ -21,10 +22,15 @@ var (
 
 func main() {
 	flag.StringVar(&port, "port", "80", "--port 80")
+	db, err := db.InitDB()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
 	u := uptime.NewUptime(Version, MinVersion, BuildTime)
 	r := mux.NewRouter()
 	r.HandleFunc("/health", u.Handler)
-
 	fmt.Println("listening on port ", port)
 	http.ListenAndServe(":"+port, r)
 }
