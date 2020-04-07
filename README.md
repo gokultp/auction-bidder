@@ -1,4 +1,4 @@
-# SellerAPP Auction Bidding
+# Auction Bidder
 
 Refer the Design Document [here](./docs/design.md)
 

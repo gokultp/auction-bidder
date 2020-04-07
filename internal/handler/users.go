@@ -25,10 +25,6 @@ func (h *UserHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		h.Create(ctx, w, r)
 	case http.MethodGet:
 		h.Get(ctx, w, r)
-	case http.MethodPut:
-		h.Update(ctx, w, r)
-	case http.MethodDelete:
-		h.Delete(ctx, w, r)
 	default:
 		handleError(w, contract.ErrMethodNotAllowed())
 	}
@@ -66,13 +62,6 @@ func (UserHandler) Create(ctx context.Context, w http.ResponseWriter, r *http.Re
 	}
 	jsonResponse(w, res)
 }
-func (UserHandler) Update(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-
-}
-
-func (UserHandler) Delete(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-
-}
 
 func (UserHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	strId := mux.Vars(r)["id"]
@@ -85,6 +74,21 @@ func (UserHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		log.Error(err)
 		handleError(w, contract.ErrBadParam("id"))
+		return
+	}
+
+	token := getToken(r)
+	if token == "" {
+		handleError(w, contract.ErrUnauthorized())
+		return
+	}
+	authenticator := auth.NewJWTAuth(token)
+	if !authenticator.Authenticate() {
+		handleError(w, contract.ErrUnauthorized())
+		return
+	}
+	if !authenticator.IsAdmin() && authenticator.UserID() != uint(id) {
+		handleError(w, contract.ErrForbidden())
 		return
 	}
 	res, cerr := users.Get(ctx, uint(id))
