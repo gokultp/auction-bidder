@@ -1,4 +1,4 @@
-package users
+package auctions
 
 import (
 	"context"
@@ -8,14 +8,15 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func Get(ctx context.Context, userID uint) (*contract.UserResponse, *contract.Error) {
-	user, err := model.GetUserByID(ctx, userID)
+func Get(ctx context.Context, auctionID *uint) (*contract.AuctionResponse, *contract.Error) {
+
+	auction, err := model.GetAuctionByID(ctx, *auctionID)
 	if err != nil {
 		log.Error(err)
 		return nil, contract.ErrInternalServerError()
 	}
-	if user == nil {
+	if auction == nil {
 		return nil, contract.ErrNotFound()
 	}
-	return userResponse(user), nil
+	return auctionResponse(auction, 200), nil
 }

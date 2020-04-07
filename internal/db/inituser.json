@@ -1,0 +1,11 @@
+{
+    "id": 1,
+    "first_name": "Gokul",
+    "last_name": "TP",
+    "email": "tp.gokul@gmail.com",
+    "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNDk5MjUsImlhdCI6MTU4NjI0OTkyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNDk5MjUsIlVzZXJJRCI6MCwiSXNBZG1pbiI6dHJ1ZX0.A8QeBpGRpwH31LsrgtwxyqxAmZ1a56n5ujZDeoqxtGgQD-vROeAps2JDbz7SVqGl5ASOTz5gWmgfJzt7s3jFqs103kAVGvqkroSyed1Kb_jW_zAbI6GU56qZM719UIlvdxn1paxGmoNYh_TePtRBc7qIXZQak5w-4pwH5Nxmgy77ujcQqzAdh4dWAKr-IYaIrvu94-xfQkGmHoaXSlbvcuIbTBaf_e65fXggHb-hE1iVqeoEziS89Att8BHuO8E0bvvgy8oRtjAWndffta_C3nKASS66GAi9WKDwGhk-Y4ajJVC7Ih-AujpdurbjqfJo0B2sXvvhQkynyurr95948Q",
+    "is_admin": true,
+    "is_active": true,
+    "created_at": "2020-04-07T08:58:45.940581542Z",
+    "updated_at": "2020-04-07T08:58:45.940581542Z"
+}

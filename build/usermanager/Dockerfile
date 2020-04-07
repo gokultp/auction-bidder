@@ -8,6 +8,10 @@ FROM alpine:3.11 as deploy
 WORKDIR /users
 
 COPY --from=builder /users/usermanager ./usermanager
+COPY --from=builder /users/rsa/id_rsa ./id_rsa
+COPY --from=builder /users/rsa/id_rsa.pub ./id_rsa.pub
+
+
 
 EXPOSE 80
 CMD ["/users/usermanager", "--port=80"]

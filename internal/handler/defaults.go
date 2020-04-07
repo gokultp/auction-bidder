@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"regexp"
 
 	"github.com/gokultp/auction-bidder/pkg/contract"
 	"github.com/labstack/gommon/log"
@@ -17,4 +18,9 @@ func jsonResponse(w http.ResponseWriter, data interface{}) {
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		log.Error(err)
 	}
+}
+
+func getToken(r *http.Request) string {
+	var re = regexp.MustCompile(`(?mi)bearer `)
+	return re.ReplaceAllString(r.Header.Get("authorization"), "")
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gokultp/auction-bidder/internal/model"
+	"github.com/gokultp/auction-bidder/internal/utils"
 	"github.com/gokultp/auction-bidder/pkg/contract"
 	"github.com/labstack/gommon/log"
 )
@@ -15,6 +16,7 @@ var (
 )
 
 func Create(ctx context.Context, user *contract.User) (*contract.UserResponse, *contract.Error) {
+
 	userData := &model.User{
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
@@ -25,11 +27,10 @@ func Create(ctx context.Context, user *contract.User) (*contract.UserResponse, *
 	if userData.IsAdmin == nil {
 		userData.IsAdmin = &varFalse
 	}
-
 	userByEmail, err := model.GetUserByEmail(ctx, *userData.Email)
 	if err != nil {
 		log.Error(err)
-		return nil, contract.ErrInternalServerError(err.Error())
+		return nil, contract.ErrInternalServerError()
 	}
 
 	if userByEmail != nil {
@@ -38,7 +39,18 @@ func Create(ctx context.Context, user *contract.User) (*contract.UserResponse, *
 
 	if err := userData.Create(ctx); err != nil {
 		log.Error(err)
-		return nil, contract.ErrInternalServerError(err.Error())
+		return nil, contract.ErrInternalServerError()
+	}
+	token, err := utils.GenerateToken(userData.ID, *userData.IsAdmin)
+	if err != nil {
+		log.Error(err)
+		return nil, contract.ErrInternalServerError()
+	}
+	userData.Token = &token
+
+	if err := userData.Update(ctx); err != nil {
+		log.Error(err)
+		return nil, contract.ErrInternalServerError()
 	}
 	return userResponse(userData), nil
 }

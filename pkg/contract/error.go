@@ -42,4 +42,7 @@ var (
 	ErrBadRequest          = newError(http.StatusBadRequest)
 	ErrBadParam            = newError(http.StatusBadRequest, "invalid parameter")
 	ErrInternalServerError = newError(http.StatusInternalServerError)
+	ErrNotFound            = newError(http.StatusNotFound)
+	ErrUnauthorized        = newError(http.StatusUnauthorized)
+	ErrForbidden           = newError(http.StatusForbidden)
 )

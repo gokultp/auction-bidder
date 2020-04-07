@@ -29,13 +29,16 @@ func (u *User) Create(ctx context.Context) error {
 
 func (u *User) Update(ctx context.Context) error {
 	db := ctx.Value("db").(*gorm.DB)
-	return db.Update(u).Error
+	return db.Save(u).Error
 }
 
 func GetUserByID(ctx context.Context, id uint) (*User, error) {
 	var user User
 	db := ctx.Value("db").(*gorm.DB)
 	if err := db.First(&user, id).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &user, nil
@@ -46,6 +49,9 @@ func GetUserByEmail(ctx context.Context, email string) (*User, error) {
 	db := ctx.Value("db").(*gorm.DB)
 	if err := db.Where(User{Email: &email}).
 		First(&user).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &user, nil

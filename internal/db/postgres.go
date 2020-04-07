@@ -13,5 +13,11 @@ func InitDB() (*gorm.DB, error) {
 	}
 	u := &model.User{}
 	u.Init(db)
+
+	b := &model.Bid{}
+	b.Init(db)
+
+	a := &model.Auction{}
+	a.Init(db)
 	return db, err
 }
