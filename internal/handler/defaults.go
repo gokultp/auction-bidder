@@ -10,6 +10,12 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
+type NotFoundHandler struct{}
+
+func (NotFoundHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	handleError(w, contract.ErrNotFound())
+}
+
 func handleError(w http.ResponseWriter, err *contract.Error) {
 	jsonResponse(w, contract.NewErrorResponse(err))
 }
@@ -34,14 +40,14 @@ func getPagination(r *http.Request) contract.Pagination {
 	query := r.URL.Query()
 	strPage := query.Get("page")
 	if strPage != "" {
-		if page, err := strconv.ParseUint(strPage, 10, 64); err != nil {
+		if page, err := strconv.ParseUint(strPage, 10, 64); err == nil {
 			p.Page = uint(page)
 		}
 	}
 	strLimit := query.Get("limit")
 	if strLimit != "" {
-		if limit, err := strconv.ParseUint(strLimit, 10, 64); err != nil {
-			p.Page = uint(limit)
+		if limit, err := strconv.ParseUint(strLimit, 10, 64); err == nil {
+			p.Limit = uint(limit)
 		}
 	}
 	return p

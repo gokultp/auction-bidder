@@ -17,11 +17,6 @@ type User struct {
 	IsActive  *bool
 }
 
-// Init will create table auto index and create custom indexed if needed
-func (u *User) Init(db *gorm.DB) {
-	db.AutoMigrate(u)
-}
-
 func (u *User) Create(ctx context.Context) error {
 	db := ctx.Value("db").(*gorm.DB)
 	return db.Create(u).Error

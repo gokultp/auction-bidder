@@ -14,11 +14,6 @@ type Bid struct {
 	AuctionID *uint
 }
 
-// Init will create table auto index and create custom indexed if needed
-func (u *Bid) Init(db *gorm.DB) {
-	db.AutoMigrate(u)
-}
-
 func (u *Bid) Create(ctx context.Context) error {
 	db := ctx.Value("db").(*gorm.DB)
 	return db.Create(u).Error
@@ -29,23 +24,24 @@ func (u *Bid) Update(ctx context.Context) error {
 	return db.Update(u).Error
 }
 
-func GetBidByID(ctx context.Context, id uint) (*Bid, error) {
-	var Bid Bid
+func GetBidByID(ctx context.Context, id uint, auctionID uint) (*Bid, error) {
+	var bid Bid
 	db := ctx.Value("db").(*gorm.DB)
-	if err := db.First(&Bid, id).Error; err != nil {
+	if err := db.Where(Bid{AuctionID: &auctionID}).First(&bid, id).Error; err != nil {
 		return nil, err
 	}
-	return &Bid, nil
+	return &bid, nil
 }
 
-func GetBidsByAuction(ctx context.Context, auctionID, limit, offset uint) ([]Bid, error) {
-	var Bids []Bid
+func GetBidsByAuction(ctx context.Context, auctionID, limit, page uint) ([]Bid, error) {
+	var bids []Bid
+	offset := (page - 1) * limit
 	db := ctx.Value("db").(*gorm.DB)
 	if err := db.Where(Bid{AuctionID: &auctionID}).
 		Offset(offset).
 		Limit(limit).
-		Find(&Bids).Error; err != nil {
+		Find(&bids).Error; err != nil {
 		return nil, err
 	}
-	return Bids, nil
+	return bids, nil
 }

@@ -2,12 +2,10 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"net/http"
 
 	"github.com/gokultp/auction-bidder/internal/db"
 	"github.com/gokultp/auction-bidder/internal/handler"
-	"github.com/gokultp/auction-bidder/internal/utils"
 	"github.com/gokultp/auction-bidder/pkg/uptime"
 	"github.com/gorilla/mux"
 )
@@ -24,29 +22,19 @@ var (
 
 func main() {
 	flag.StringVar(&port, "port", "80", "--port 80")
-	db, err := db.InitDB()
+	dbConn, err := db.InitDB()
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
-	err = utils.InitJWT("./id_rsa", "./id_rsa.pub")
-	if err != nil {
-		panic(err)
-	}
+	defer dbConn.Close()
 
+	u := uptime.NewUptime(Version, MinVersion, BuildTime)
 	r := mux.NewRouter()
 	r.NotFoundHandler = handler.NotFoundHandler{}
-	u := uptime.NewUptime(Version, MinVersion, BuildTime)
+	e := &handler.EventHandler{DB: dbConn}
 	r.HandleFunc("/health", u.Handler)
+	r.HandleFunc("/v1/events", e.Handle)
+	r.HandleFunc("/v1/events/{id:[0-9]+}", e.Handle)
 
-	auctions := &handler.AuctionHandler{DB: db}
-	r.HandleFunc("/v1/auctions", auctions.Handle)
-	r.HandleFunc("/v1/auctions/{id:[0-9]+}", auctions.Handle)
-
-	bids := &handler.BidHandler{DB: db}
-	r.HandleFunc("/v1/auctions/{auctionId:[0-9]+}/bids", bids.Handle)
-	r.HandleFunc("/v1/auctions/{auctionId:[0-9]+}/bids/{id:[0-9]+}", bids.Handle)
-
-	fmt.Println("listening on port ", port)
 	http.ListenAndServe(":"+port, r)
 }

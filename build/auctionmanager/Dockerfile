@@ -8,6 +8,8 @@ FROM alpine:3.11 as deploy
 WORKDIR /auctions
 
 COPY --from=builder /auctions/auctionmanager ./auctionmanager
+COPY --from=builder /auctions/rsa/id_rsa ./id_rsa
+COPY --from=builder /auctions/rsa/id_rsa.pub ./id_rsa.pub
 
 EXPOSE 80
 CMD ["/auctions/auctionmanager", "--port=80"]

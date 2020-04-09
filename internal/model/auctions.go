@@ -16,11 +16,7 @@ type Auction struct {
 	EndAt         *time.Time
 	StartPrice    *uint
 	AuctionWinner *uint
-}
-
-// Init will create table auto index and create custom indexed if needed
-func (u *Auction) Init(db *gorm.DB) {
-	db.AutoMigrate(u)
+	CreatedBy     *uint
 }
 
 func (u *Auction) Create(ctx context.Context) error {
@@ -42,8 +38,9 @@ func GetAuctionByID(ctx context.Context, id uint) (*Auction, error) {
 	return &auction, nil
 }
 
-func GetAuctions(ctx context.Context, limit, offset uint) ([]Auction, error) {
+func GetAuctions(ctx context.Context, limit, page uint) ([]Auction, error) {
 	var auctions []Auction
+	offset := (page - 1) * limit
 	db := ctx.Value("db").(*gorm.DB)
 	if err := db.Offset(offset).Limit(limit).Find(&auctions).Error; err != nil {
 		return nil, err

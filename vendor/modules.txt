@@ -7,6 +7,8 @@ github.com/jinzhu/gorm
 github.com/jinzhu/gorm/dialects/postgres
 # github.com/jinzhu/inflection v1.0.0
 github.com/jinzhu/inflection
+# github.com/kr/beanstalk v0.0.0-20180818045031-cae1762e4858
+github.com/kr/beanstalk
 # github.com/labstack/gommon v0.3.0
 github.com/labstack/gommon/log
 github.com/labstack/gommon/color

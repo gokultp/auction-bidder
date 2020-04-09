@@ -15,6 +15,7 @@ func Create(ctx context.Context, auction *contract.Auction) (*contract.AuctionRe
 		StartAt:     auction.StartAt,
 		EndAt:       auction.EndAt,
 		StartPrice:  auction.StartPrice,
+		CreatedBy:   auction.CreatedBy,
 	}
 
 	if err := auctionData.Create(ctx); err != nil {
@@ -31,14 +32,20 @@ func auctionResponse(a *model.Auction, httpCode int) *contract.AuctionResponse {
 			Code:   &httpCode,
 			Status: &success,
 		},
-		Data: &contract.Auction{
-			ID:          a.ID,
-			Description: a.Description,
-			StartAt:     a.StartAt,
-			EndAt:       a.EndAt,
-			StartPrice:  a.StartPrice,
-			CreatedAt:   &a.CreatedAt,
-			UpdatedAt:   &a.UpdatedAt,
-		},
+		Data: convertAutionModelToContract(a),
+	}
+}
+
+func convertAutionModelToContract(a *model.Auction) *contract.Auction {
+	return &contract.Auction{
+		ID:          a.ID,
+		Name:        a.Name,
+		Description: a.Description,
+		StartAt:     a.StartAt,
+		EndAt:       a.EndAt,
+		StartPrice:  a.StartPrice,
+		CreatedAt:   &a.CreatedAt,
+		UpdatedAt:   &a.UpdatedAt,
+		CreatedBy:   a.CreatedBy,
 	}
 }

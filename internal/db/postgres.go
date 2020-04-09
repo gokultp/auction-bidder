@@ -11,13 +11,8 @@ func InitDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	u := &model.User{}
-	u.Init(db)
-
-	b := &model.Bid{}
-	b.Init(db)
-
-	a := &model.Auction{}
-	a.Init(db)
-	return db, err
+	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Bid{})
+	db.AutoMigrate(&model.Auction{})
+	return db, nil
 }
