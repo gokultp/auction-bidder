@@ -2,7 +2,7 @@
 
 Refer the Design Document [here](./docs/design.md)
 
-## Prerequisits
+## Prerequisites
 1. [GNU Make](https://www.gnu.org/software/make/)
 2. [Docker](https://www.docker.com/get-started)
 3. [Kubernetes](https://kubernetes.io/docs/setup/)
