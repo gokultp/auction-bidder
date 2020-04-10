@@ -3,7 +3,6 @@ module github.com/gokultp/auction-bidder
 go 1.12
 
 require (
-	github.com/beanstalkd/go-beanstalk v0.0.0-20200229072127-2b7b37f17578 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/mux v1.7.4

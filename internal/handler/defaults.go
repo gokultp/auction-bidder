@@ -17,11 +17,12 @@ func (NotFoundHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleError(w http.ResponseWriter, err *contract.Error) {
-	jsonResponse(w, contract.NewErrorResponse(err))
+	jsonResponse(w, contract.NewErrorResponse(err), err.HTTPCode)
 }
 
-func jsonResponse(w http.ResponseWriter, data interface{}) {
+func jsonResponse(w http.ResponseWriter, data interface{}, status int) {
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		log.Error(err)
 	}

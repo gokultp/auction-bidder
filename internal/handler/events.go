@@ -10,15 +10,19 @@ import (
 	"github.com/gokultp/auction-bidder/pkg/contract"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"github.com/kr/beanstalk"
 	"github.com/labstack/gommon/log"
 )
 
 type EventHandler struct {
-	DB *gorm.DB
+	DB    *gorm.DB
+	Queue *beanstalk.Conn
 }
 
 func (h *EventHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ctx := context.WithValue(r.Context(), "db", h.DB)
+	ctx = context.WithValue(ctx, "queue", h.Queue)
+
 	switch r.Method {
 	case http.MethodPost:
 		h.Create(ctx, w, r)
@@ -46,7 +50,7 @@ func (EventHandler) Create(ctx context.Context, w http.ResponseWriter, r *http.R
 		handleError(w, err)
 		return
 	}
-	jsonResponse(w, res)
+	jsonResponse(w, res, http.StatusOK)
 }
 
 func (EventHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Request) {
@@ -67,7 +71,7 @@ func (EventHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Requ
 		handleError(w, cerr)
 		return
 	}
-	jsonResponse(w, res)
+	jsonResponse(w, res, http.StatusOK)
 }
 
 func validateEvent(e *contract.Event) *contract.Error {

@@ -2,14 +2,12 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"sync"
-	"time"
 
 	"github.com/gokultp/auction-bidder/internal/db"
+	"github.com/gokultp/auction-bidder/internal/events"
 	"github.com/gokultp/auction-bidder/internal/model"
 	"github.com/kr/beanstalk"
-	"github.com/labstack/gommon/log"
 )
 
 func main() {
@@ -17,52 +15,30 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	defer dbConn.Close()
 	ctx := context.WithValue(context.Background(), "db", dbConn)
 
 	qconn, err := beanstalk.Dial("tcp", "beanstalk:11300")
 	if err != nil {
 		panic(err)
 	}
+	defer qconn.Close()
 	scheduleEvents(ctx, qconn)
 }
 
 func scheduleEvents(ctx context.Context, qconn *beanstalk.Conn) {
-	events, err := model.GetEventsForNextBatch(ctx)
+	eventsForNextBatch, err := model.GetEventsForNextBatch(ctx)
 	if err != nil {
 		panic(err)
 	}
 
 	var wg sync.WaitGroup
-	for _, event := range events {
+	for _, event := range eventsForNextBatch {
 		wg.Add(1)
 		go func(e model.Event, wg *sync.WaitGroup) {
 			defer wg.Done()
-			data, err := json.Marshal(e)
-			if err != nil {
-				log.Error(err)
-				return
-			}
-			id, err := qconn.Put(data, 1, 0, max(0, e.Time.Sub(time.Now())))
-			if err != nil {
-				log.Error(err)
-				return
-			}
-			e.Status = &model.EventStatusScheduled
-			err = e.Update(ctx)
-			if err != nil {
-				log.Error(err)
-				return
-			}
-			log.Info("enqueued event", e.ID, "job id", id)
+			events.EnqueueEvent(ctx, &e, qconn)
 		}(event, &wg)
 	}
 	wg.Wait()
-}
-
-func max(a, b time.Duration) time.Duration {
-	if a > b {
-		return a
-	}
-	return b
 }

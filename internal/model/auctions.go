@@ -7,6 +7,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+var (
+	AuctionStatusActive = "active"
+	AuctionStatusClosed = "closed"
+)
+
 // Auction defines the Auction model
 type Auction struct {
 	gorm.Model
@@ -14,6 +19,7 @@ type Auction struct {
 	Description   *string
 	StartAt       *time.Time
 	EndAt         *time.Time
+	Status        *string
 	StartPrice    *uint
 	AuctionWinner *uint
 	CreatedBy     *uint
@@ -26,7 +32,7 @@ func (u *Auction) Create(ctx context.Context) error {
 
 func (u *Auction) Update(ctx context.Context) error {
 	db := ctx.Value("db").(*gorm.DB)
-	return db.Update(u).Error
+	return db.Save(u).Error
 }
 
 func GetAuctionByID(ctx context.Context, id uint) (*Auction, error) {

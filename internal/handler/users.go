@@ -60,7 +60,7 @@ func (UserHandler) Create(ctx context.Context, w http.ResponseWriter, r *http.Re
 		handleError(w, err)
 		return
 	}
-	jsonResponse(w, res)
+	jsonResponse(w, res, http.StatusOK)
 }
 
 func (UserHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Request) {
@@ -96,7 +96,7 @@ func (UserHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Reque
 		handleError(w, cerr)
 		return
 	}
-	jsonResponse(w, res)
+	jsonResponse(w, res, http.StatusOK)
 }
 
 func validateUser(u *contract.User) *contract.Error {

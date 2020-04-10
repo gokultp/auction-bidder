@@ -20,6 +20,7 @@ type Event struct {
 	Time   *time.Time
 	Data   *string
 	Status *string `gorm:"default:'scheduled'"`
+	Type   *string
 }
 
 func (u *Event) Create(ctx context.Context) error {
@@ -43,6 +44,9 @@ func GetEventByID(ctx context.Context, id uint) (*Event, error) {
 	var event Event
 	db := ctx.Value("db").(*gorm.DB)
 	if err := db.First(&event, id).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &event, nil

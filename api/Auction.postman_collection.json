@@ -1,0 +1,399 @@
+{
+	"info": {
+		"_postman_id": "8ebe4e43-6c40-4144-a305-7911cf4072ea",
+		"name": "Auction",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Auction",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNTQzMjUsImlhdCI6MTU4NjI1NDMyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNTQzMjUsInVzZXJfaWQiOjIsImlzX2FkbWluIjp0cnVlfQ.Kxs-vJvxcmjqfwiJ9cWw42umbSWKTeHL2u7VWTRVRU6oc6cQguoN6dVoZwJW7Z4K67ItgqaIDzblaJ1yxtR6d9sEERXHptENoDn3mhQCtGG5zWIVtTEZgoaWuEMEDfsH5LXfij3XVxGdhD-_uZ4NMlgDAxMYDUBxo5lbMhAsvymjhi01NQxM0UDVFZ6LEfgQNNA2F1zlkon1tWEv5-56a2FD_DPVgaASl2Ky1pmnI0_y_VPMgJZeQx-s6KJr4WNwuEn_4VQem4mLenpCTBaPjC55BiG11pUpiAOQiv1eKJSjaRWjT22q2aU06dNJRA5RsrmjBYa6Ik-i7VLBXL50qQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\" : \"Test Auction\",\n    \"description\" : \"test description\",\n    \"start_price\" : 100,\n    \"start_at\": \"2020-04-08T06:31:23.402Z\",\n    \"end_at\" : \"2020-04-10T06:38:23.402Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.auctionbidder.com/v1/auctions",
+					"protocol": "http",
+					"host": [
+						"api",
+						"auctionbidder",
+						"com"
+					],
+					"path": [
+						"v1",
+						"auctions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Auction (Only Internal for status Update)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNTQzMjUsImlhdCI6MTU4NjI1NDMyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNTQzMjUsInVzZXJfaWQiOjIsImlzX2FkbWluIjp0cnVlfQ.Kxs-vJvxcmjqfwiJ9cWw42umbSWKTeHL2u7VWTRVRU6oc6cQguoN6dVoZwJW7Z4K67ItgqaIDzblaJ1yxtR6d9sEERXHptENoDn3mhQCtGG5zWIVtTEZgoaWuEMEDfsH5LXfij3XVxGdhD-_uZ4NMlgDAxMYDUBxo5lbMhAsvymjhi01NQxM0UDVFZ6LEfgQNNA2F1zlkon1tWEv5-56a2FD_DPVgaASl2Ky1pmnI0_y_VPMgJZeQx-s6KJr4WNwuEn_4VQem4mLenpCTBaPjC55BiG11pUpiAOQiv1eKJSjaRWjT22q2aU06dNJRA5RsrmjBYa6Ik-i7VLBXL50qQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\" : \"closed\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.auctionbidder.com/v1/auctions/8",
+					"protocol": "http",
+					"host": [
+						"api",
+						"auctionbidder",
+						"com"
+					],
+					"path": [
+						"v1",
+						"auctions",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Bid",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNTQzMjUsImlhdCI6MTU4NjI1NDMyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNTQzMjUsInVzZXJfaWQiOjIsImlzX2FkbWluIjp0cnVlfQ.Kxs-vJvxcmjqfwiJ9cWw42umbSWKTeHL2u7VWTRVRU6oc6cQguoN6dVoZwJW7Z4K67ItgqaIDzblaJ1yxtR6d9sEERXHptENoDn3mhQCtGG5zWIVtTEZgoaWuEMEDfsH5LXfij3XVxGdhD-_uZ4NMlgDAxMYDUBxo5lbMhAsvymjhi01NQxM0UDVFZ6LEfgQNNA2F1zlkon1tWEv5-56a2FD_DPVgaASl2Ky1pmnI0_y_VPMgJZeQx-s6KJr4WNwuEn_4VQem4mLenpCTBaPjC55BiG11pUpiAOQiv1eKJSjaRWjT22q2aU06dNJRA5RsrmjBYa6Ik-i7VLBXL50qQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\" : \"Test Auction\",\n    \"description\" : \"test description\",\n    \"email\" : \"tp.gokul1@gmail.com\",\n    \"start_price\" : 100,\n    \"start_at\": \"2020-04-08T04:58:23.402Z\",\n    \"end_at\" : \"2020-04-10T04:58:23.402Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.auctionbidder.com/v1/auctions/",
+					"protocol": "http",
+					"host": [
+						"api",
+						"auctionbidder",
+						"com"
+					],
+					"path": [
+						"v1",
+						"auctions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Auctions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNTQzMjUsImlhdCI6MTU4NjI1NDMyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNTQzMjUsInVzZXJfaWQiOjIsImlzX2FkbWluIjp0cnVlfQ.Kxs-vJvxcmjqfwiJ9cWw42umbSWKTeHL2u7VWTRVRU6oc6cQguoN6dVoZwJW7Z4K67ItgqaIDzblaJ1yxtR6d9sEERXHptENoDn3mhQCtGG5zWIVtTEZgoaWuEMEDfsH5LXfij3XVxGdhD-_uZ4NMlgDAxMYDUBxo5lbMhAsvymjhi01NQxM0UDVFZ6LEfgQNNA2F1zlkon1tWEv5-56a2FD_DPVgaASl2Ky1pmnI0_y_VPMgJZeQx-s6KJr4WNwuEn_4VQem4mLenpCTBaPjC55BiG11pUpiAOQiv1eKJSjaRWjT22q2aU06dNJRA5RsrmjBYa6Ik-i7VLBXL50qQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.auctionbidder.com/v1/auctions",
+					"protocol": "http",
+					"host": [
+						"api",
+						"auctionbidder",
+						"com"
+					],
+					"path": [
+						"v1",
+						"auctions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Auction by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNTQzMjUsImlhdCI6MTU4NjI1NDMyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNTQzMjUsInVzZXJfaWQiOjIsImlzX2FkbWluIjp0cnVlfQ.Kxs-vJvxcmjqfwiJ9cWw42umbSWKTeHL2u7VWTRVRU6oc6cQguoN6dVoZwJW7Z4K67ItgqaIDzblaJ1yxtR6d9sEERXHptENoDn3mhQCtGG5zWIVtTEZgoaWuEMEDfsH5LXfij3XVxGdhD-_uZ4NMlgDAxMYDUBxo5lbMhAsvymjhi01NQxM0UDVFZ6LEfgQNNA2F1zlkon1tWEv5-56a2FD_DPVgaASl2Ky1pmnI0_y_VPMgJZeQx-s6KJr4WNwuEn_4VQem4mLenpCTBaPjC55BiG11pUpiAOQiv1eKJSjaRWjT22q2aU06dNJRA5RsrmjBYa6Ik-i7VLBXL50qQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.auctionbidder.com/v1/auctions/1",
+					"protocol": "http",
+					"host": [
+						"api",
+						"auctionbidder",
+						"com"
+					],
+					"path": [
+						"v1",
+						"auctions",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNDk5MjUsImlhdCI6MTU4NjI0OTkyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNDk5MjUsIlVzZXJJRCI6MCwiSXNBZG1pbiI6dHJ1ZX0.A8QeBpGRpwH31LsrgtwxyqxAmZ1a56n5ujZDeoqxtGgQD-vROeAps2JDbz7SVqGl5ASOTz5gWmgfJzt7s3jFqs103kAVGvqkroSyed1Kb_jW_zAbI6GU56qZM719UIlvdxn1paxGmoNYh_TePtRBc7qIXZQak5w-4pwH5Nxmgy77ujcQqzAdh4dWAKr-IYaIrvu94-xfQkGmHoaXSlbvcuIbTBaf_e65fXggHb-hE1iVqeoEziS89Att8BHuO8E0bvvgy8oRtjAWndffta_C3nKASS66GAi9WKDwGhk-Y4ajJVC7Ih-AujpdurbjqfJo0B2sXvvhQkynyurr95948Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\" : \"Gokul\",\n    \"last_name\" : \"TP\",\n    \"email\" : \"tp.gokul@gmail.com\",\n    \"is_admin\" : true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.auctionbidder.com/v1/users",
+					"protocol": "http",
+					"host": [
+						"api",
+						"auctionbidder",
+						"com"
+					],
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Event",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNDk5MjUsImlhdCI6MTU4NjI0OTkyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNDk5MjUsIlVzZXJJRCI6MCwiSXNBZG1pbiI6dHJ1ZX0.A8QeBpGRpwH31LsrgtwxyqxAmZ1a56n5ujZDeoqxtGgQD-vROeAps2JDbz7SVqGl5ASOTz5gWmgfJzt7s3jFqs103kAVGvqkroSyed1Kb_jW_zAbI6GU56qZM719UIlvdxn1paxGmoNYh_TePtRBc7qIXZQak5w-4pwH5Nxmgy77ujcQqzAdh4dWAKr-IYaIrvu94-xfQkGmHoaXSlbvcuIbTBaf_e65fXggHb-hE1iVqeoEziS89Att8BHuO8E0bvvgy8oRtjAWndffta_C3nKASS66GAi9WKDwGhk-Y4ajJVC7Ih-AujpdurbjqfJo0B2sXvvhQkynyurr95948Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\" : \"Gokul\",\n    \"last_name\" : \"TP\",\n    \"email\" : \"tp.gokul@gmail.com\",\n    \"is_admin\" : true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.auctionbidder.com/v1/users",
+					"protocol": "http",
+					"host": [
+						"api",
+						"auctionbidder",
+						"com"
+					],
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Event",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNDk5MjUsImlhdCI6MTU4NjI0OTkyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNDk5MjUsIlVzZXJJRCI6MCwiSXNBZG1pbiI6dHJ1ZX0.A8QeBpGRpwH31LsrgtwxyqxAmZ1a56n5ujZDeoqxtGgQD-vROeAps2JDbz7SVqGl5ASOTz5gWmgfJzt7s3jFqs103kAVGvqkroSyed1Kb_jW_zAbI6GU56qZM719UIlvdxn1paxGmoNYh_TePtRBc7qIXZQak5w-4pwH5Nxmgy77ujcQqzAdh4dWAKr-IYaIrvu94-xfQkGmHoaXSlbvcuIbTBaf_e65fXggHb-hE1iVqeoEziS89Att8BHuO8E0bvvgy8oRtjAWndffta_C3nKASS66GAi9WKDwGhk-Y4ajJVC7Ih-AujpdurbjqfJo0B2sXvvhQkynyurr95948Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\" : \"Gokul\",\n    \"last_name\" : \"TP\",\n    \"email\" : \"tp.gokul@gmail.com\",\n    \"is_admin\" : true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.auctionbidder.com/v1/events/3",
+					"protocol": "http",
+					"host": [
+						"api",
+						"auctionbidder",
+						"com"
+					],
+					"path": [
+						"v1",
+						"events",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

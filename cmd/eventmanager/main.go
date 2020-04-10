@@ -8,6 +8,8 @@ import (
 	"github.com/gokultp/auction-bidder/internal/handler"
 	"github.com/gokultp/auction-bidder/pkg/uptime"
 	"github.com/gorilla/mux"
+	"github.com/kr/beanstalk"
+	"github.com/labstack/gommon/log"
 )
 
 var (
@@ -28,13 +30,24 @@ func main() {
 	}
 	defer dbConn.Close()
 
+	queueConn, err := beanstalk.Dial("tcp", "beanstalk:11300")
+	if err != nil {
+		panic(err)
+	}
+	defer queueConn.Close()
+
 	u := uptime.NewUptime(Version, MinVersion, BuildTime)
 	r := mux.NewRouter()
 	r.NotFoundHandler = handler.NotFoundHandler{}
-	e := &handler.EventHandler{DB: dbConn}
+	e := &handler.EventHandler{
+		DB:    dbConn,
+		Queue: queueConn,
+	}
 	r.HandleFunc("/health", u.Handler)
 	r.HandleFunc("/v1/events", e.Handle)
 	r.HandleFunc("/v1/events/{id:[0-9]+}", e.Handle)
-
-	http.ListenAndServe(":"+port, r)
+	log.Info("listening at", port)
+	if err := http.ListenAndServe(":"+port, r); err != nil {
+		log.Error(err)
+	}
 }

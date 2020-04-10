@@ -1,0 +1,107 @@
+---
+# Source: worker/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: worker
+  labels:
+    helm.sh/chart: worker-0.1.0
+    app.kubernetes.io/name: worker
+    app.kubernetes.io/instance: worker
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: worker/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: worker-config
+  labels:
+    app: worker
+data:
+  ADMIN_TOKEN: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUxODYyNTQzMjUsImlhdCI6MTU4NjI1NDMyNSwiaXNzIjoidXNlcm1hbmFnZXIiLCJuYmYiOjE1ODYyNTQzMjUsInVzZXJfaWQiOjIsImlzX2FkbWluIjp0cnVlfQ.Kxs-vJvxcmjqfwiJ9cWw42umbSWKTeHL2u7VWTRVRU6oc6cQguoN6dVoZwJW7Z4K67ItgqaIDzblaJ1yxtR6d9sEERXHptENoDn3mhQCtGG5zWIVtTEZgoaWuEMEDfsH5LXfij3XVxGdhD-_uZ4NMlgDAxMYDUBxo5lbMhAsvymjhi01NQxM0UDVFZ6LEfgQNNA2F1zlkon1tWEv5-56a2FD_DPVgaASl2Ky1pmnI0_y_VPMgJZeQx-s6KJr4WNwuEn_4VQem4mLenpCTBaPjC55BiG11pUpiAOQiv1eKJSjaRWjT22q2aU06dNJRA5RsrmjBYa6Ik-i7VLBXL50qQ
+---
+# Source: worker/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker
+  labels:
+    helm.sh/chart: worker-0.1.0
+    app.kubernetes.io/name: worker
+    app.kubernetes.io/instance: worker
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: worker
+    app.kubernetes.io/instance: worker
+---
+# Source: worker/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    helm.sh/chart: worker-0.1.0
+    app.kubernetes.io/name: worker
+    app.kubernetes.io/instance: worker
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: worker
+      app.kubernetes.io/instance: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: worker
+        app.kubernetes.io/instance: worker
+    spec:
+      serviceAccountName: worker
+      securityContext:
+        {}
+      containers:
+        - name: worker
+          securityContext:
+            {}
+          image: "worker"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: worker-config
+          resources:
+            {}
+---
+# Source: worker/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "worker-test-connection"
+  labels:
+    helm.sh/chart: worker-0.1.0
+    app.kubernetes.io/name: worker
+    app.kubernetes.io/instance: worker
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['worker:80']
+  restartPolicy: Never

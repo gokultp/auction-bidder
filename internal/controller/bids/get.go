@@ -36,7 +36,7 @@ func BulkGet(ctx context.Context, auctionID uint, p contract.Pagination) (*contr
 		bidRes = append(bidRes, *convertBidModelToContract(bid))
 	}
 	return &contract.MultiBidResponse{
-		Meta: utils.GetMetadata(p, fmt.Sprintf("/v1/auctions/%d/bids", bids[0].AuctionID)),
+		Meta: utils.GetMetadata(p, fmt.Sprintf("/v1/auctions/%d/bids", auctionID)),
 		Data: bidRes,
 	}, nil
 }

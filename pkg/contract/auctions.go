@@ -9,7 +9,8 @@ type Auction struct {
 	StartAt       *time.Time `json:"start_at"`
 	EndAt         *time.Time `json:"end_at"`
 	StartPrice    *uint      `json:"start_price"`
-	AuctionWinner *uint      `json:"auction_winner"`
+	Status        *string    `json:"status"`
+	AuctionWinner *string    `json:"auction_winner"`
 	CreatedBy     *uint      `json:"created_by"`
 	CreatedAt     *time.Time `json:"created_at"`
 	UpdatedAt     *time.Time `json:"updated_at"`

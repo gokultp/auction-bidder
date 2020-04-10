@@ -42,10 +42,7 @@ func (BidHandler) Create(ctx context.Context, w http.ResponseWriter, r *http.Req
 		handleError(w, contract.ErrUnauthorized())
 		return
 	}
-	if !authenticator.IsAdmin() {
-		handleError(w, contract.ErrForbidden())
-		return
-	}
+	ctx = context.WithValue(ctx, "auth", authenticator)
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Error(err)
 		handleError(w, contract.ErrBadRequest())
@@ -67,11 +64,11 @@ func (BidHandler) Create(ctx context.Context, w http.ResponseWriter, r *http.Req
 	req.UserID = &userID
 	req.AuctionID = &auctionIDUint
 	res, cerr := bids.Create(ctx, &req)
-	if err != nil {
+	if cerr != nil {
 		handleError(w, cerr)
 		return
 	}
-	jsonResponse(w, res)
+	jsonResponse(w, res, http.StatusOK)
 }
 
 func (BidHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Request) {
@@ -86,6 +83,7 @@ func (BidHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		handleError(w, contract.ErrUnauthorized())
 		return
 	}
+	ctx = context.WithValue(ctx, "auth", authenticator)
 	strAuctionId := mux.Vars(r)["auctionId"]
 	auctionID, err := strconv.ParseUint(strAuctionId, 10, 64)
 	if err != nil {
@@ -101,7 +99,7 @@ func (BidHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Reques
 			handleError(w, contract.ErrBadParam("id"))
 			return
 		}
-		jsonResponse(w, res)
+		jsonResponse(w, res, http.StatusOK)
 		return
 	}
 	id, err := strconv.ParseUint(strId, 10, 64)
@@ -115,7 +113,7 @@ func (BidHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		handleError(w, cerr)
 		return
 	}
-	jsonResponse(w, res)
+	jsonResponse(w, res, http.StatusOK)
 }
 
 func validateBid(b *contract.Bid) *contract.Error {
