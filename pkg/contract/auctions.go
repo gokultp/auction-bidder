@@ -1,6 +1,9 @@
 package contract
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Auction struct {
 	ID            uint       `json:"id"`
@@ -24,4 +27,45 @@ type AuctionResponse struct {
 type MultiAuctionResponse struct {
 	Meta *Metadata `json:"metadata"`
 	Data []Auction `json:"data"`
+}
+
+func (a *Auction) Validate() *Error {
+	if a == nil {
+		return ErrBadParam("empty body")
+	}
+	if a.Name == nil {
+		return ErrBadParam("empty param name")
+	}
+	if err := validateMaxLength("name", *a.Name, 32); err != nil {
+		return err
+	}
+	if a.Description == nil {
+		return ErrBadParam("empty param description")
+	}
+	if err := validateMaxLength("description", *a.Description, 128); err != nil {
+		return err
+	}
+	if a.StartAt == nil {
+		return ErrBadParam("empty param start_at")
+	}
+	if a.EndAt == nil {
+		return ErrBadParam("empty param end_at")
+	}
+	if a.StartPrice == nil {
+		return ErrBadParam("empty param start_price")
+	}
+	if a.EndAt.Sub(*a.StartAt) < time.Minute*2 {
+		return ErrBadParam("auction should be running atleast for 2 minutes")
+	}
+	if a.EndAt.Sub(time.Now()) < time.Minute*2 {
+		return ErrBadParam("auction should be running atleast for 2 minutes")
+	}
+	return nil
+}
+
+func validateMaxLength(field, value string, l int) *Error {
+	if len(value) > l {
+		return ErrBadParam(fmt.Sprintf("max legth for %s is %d", field, l))
+	}
+	return nil
 }

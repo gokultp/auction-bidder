@@ -9,6 +9,7 @@ import (
 	"github.com/gokultp/auction-bidder/internal/utils"
 	"github.com/gokultp/auction-bidder/pkg/uptime"
 	"github.com/gorilla/mux"
+	"github.com/labstack/gommon/log"
 )
 
 var (
@@ -45,6 +46,6 @@ func main() {
 	r.HandleFunc("/health", u.Handler)
 	r.HandleFunc("/v1/users", users.Handle)
 	r.HandleFunc("/v1/users/{id:[0-9]+}", users.Handle)
-
+	log.Info("Listening at ", port)
 	http.ListenAndServe(":"+port, r)
 }

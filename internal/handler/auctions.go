@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gokultp/auction-bidder/internal/checks/auth"
 	"github.com/gokultp/auction-bidder/internal/controller/auctions"
@@ -21,7 +20,11 @@ type AuctionHandler struct {
 }
 
 func (h *AuctionHandler) Handle(w http.ResponseWriter, r *http.Request) {
-	ctx := context.WithValue(r.Context(), "db", h.DB)
+	ctx, err := getContext(r, h.DB)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
 	switch r.Method {
 	case http.MethodPost:
 		h.Create(ctx, w, r)
@@ -36,30 +39,11 @@ func (h *AuctionHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 func (AuctionHandler) Create(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	var req contract.Auction
-	token := getToken(r)
-	if token == "" {
-		handleError(w, contract.ErrUnauthorized())
-		return
-	}
-	authenticator := auth.NewJWTAuth(token)
-	if !authenticator.Authenticate() {
-		handleError(w, contract.ErrUnauthorized())
-		return
-	}
-	if !authenticator.IsAdmin() {
-		handleError(w, contract.ErrForbidden())
-		return
-	}
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Error(err)
-		handleError(w, contract.ErrBadRequest())
-		return
-	}
-	if err := validateAuction(&req); err != nil {
+	if err := commonHandler(ctx, r, &req, true); err != nil {
 		handleError(w, err)
 		return
 	}
-	userID := authenticator.UserID()
+	userID := ctx.Value("auth").(auth.Authenticator).UserID()
 	req.CreatedBy = &userID
 	res, err := auctions.Create(ctx, &req)
 	if err != nil {
@@ -115,18 +99,16 @@ func (AuctionHandler) Update(ctx context.Context, w http.ResponseWriter, r *http
 }
 
 func (AuctionHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	token := getToken(r)
-	if token == "" {
-		handleError(w, contract.ErrUnauthorized())
+	if err := commonHandler(ctx, r, nil, false); err != nil {
+		handleError(w, contract.ErrBadParam("id"))
 		return
 	}
-	authenticator := auth.NewJWTAuth(token)
-	if !authenticator.Authenticate() {
-		handleError(w, contract.ErrUnauthorized())
+	id, err, ok := getIDsFromPath(r, "id")
+	if err != nil {
+		handleError(w, contract.ErrBadParam("id"))
 		return
 	}
-	strId := mux.Vars(r)["id"]
-	if strId == "" {
+	if !ok {
 		p := getPagination(r)
 		res, err := auctions.BulkGet(ctx, p)
 		if err != nil {
@@ -136,50 +118,10 @@ func (AuctionHandler) Get(ctx context.Context, w http.ResponseWriter, r *http.Re
 		jsonResponse(w, res, http.StatusOK)
 		return
 	}
-	id, err := strconv.ParseUint(strId, 10, 64)
-	if err != nil {
-		log.Error(err)
-		handleError(w, contract.ErrBadParam("id"))
-		return
-	}
-	res, cerr := auctions.Get(ctx, uint(id))
+	res, cerr := auctions.Get(ctx, id)
 	if err != nil {
 		handleError(w, cerr)
 		return
 	}
 	jsonResponse(w, res, http.StatusOK)
-}
-
-func validateAuction(a *contract.Auction) *contract.Error {
-	if a == nil {
-		return contract.ErrBadParam("empty body")
-	}
-	if a.Name == nil {
-		return contract.ErrBadParam("empty param name")
-	}
-	if err := validateMaxLength("name", *a.Name, 32); err != nil {
-		return err
-	}
-	if a.Description == nil {
-		return contract.ErrBadParam("empty param description")
-	}
-	if err := validateMaxLength("description", *a.Description, 128); err != nil {
-		return err
-	}
-	if a.StartAt == nil {
-		return contract.ErrBadParam("empty param start_at")
-	}
-	if a.EndAt == nil {
-		return contract.ErrBadParam("empty param end_at")
-	}
-	if a.StartPrice == nil {
-		return contract.ErrBadParam("empty param start_price")
-	}
-	if a.EndAt.Sub(*a.StartAt) < time.Minute*2 {
-		return contract.ErrBadParam("auction should be running atleast for 2 minutes")
-	}
-	if a.EndAt.Sub(time.Now()) < time.Minute*2 {
-		return contract.ErrBadParam("auction should be running atleast for 2 minutes")
-	}
-	return nil
 }

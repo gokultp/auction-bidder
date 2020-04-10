@@ -6,6 +6,7 @@ import (
 
 	"github.com/gokultp/auction-bidder/internal/db"
 	"github.com/gokultp/auction-bidder/internal/handler"
+	"github.com/gokultp/auction-bidder/internal/utils"
 	"github.com/gokultp/auction-bidder/pkg/uptime"
 	"github.com/gorilla/mux"
 	"github.com/kr/beanstalk"
@@ -34,6 +35,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	err = utils.InitJWT("./id_rsa", "./id_rsa.pub")
+	if err != nil {
+		panic(err)
+	}
+
 	defer queueConn.Close()
 
 	u := uptime.NewUptime(Version, MinVersion, BuildTime)

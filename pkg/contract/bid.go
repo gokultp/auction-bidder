@@ -20,3 +20,13 @@ type MultiBidResponse struct {
 	Meta *Metadata `json:"metadata"`
 	Data []Bid     `json:"data"`
 }
+
+func (b *Bid) Validate() *Error {
+	if b == nil {
+		return ErrBadParam("empty body")
+	}
+	if b.Price == nil {
+		return ErrBadParam("empty param name")
+	}
+	return nil
+}
